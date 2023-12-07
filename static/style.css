@@ -1,0 +1,25 @@
+h2 {
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 30px;
+  margin-left: 20px; }
+
+h3 {
+  margin-right: 60px;
+  margin-left: 60px; }
+
+ab {
+  margin-right: 70px;
+  margin-left: 70px; }
+
+#new_file {
+  margin-left: 5%;
+  margin-right: 5%; }
+
+#ir-a-subir {
+  padding: 0.2rem; }
+
+input.adjust-width {
+    /* Rough estimate - adjust the multiplier as needed */
+    width: calc(1ch * 30); /* Example for a placeholder with ~30 characters */
+}
