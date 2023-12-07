@@ -2,6 +2,7 @@ from django.shortcuts import reverse, render
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 from .models import ArchivoCrudo
 from .forms import ArchivoCrudoForm
 
@@ -23,7 +24,7 @@ class subirarchivoscrudosVista(CreateView):
         form = ArchivoCrudoForm(request.POST, request.FILES)
         if form.is_valid():
             object = form.save(commit=False)
-            object.usuario = request.user
+            object.usuario = User.objects.get(id=1)
             object.save()
             return HttpResponseRedirect(reverse('inicio'))
         else:

@@ -76,23 +76,23 @@ WSGI_APPLICATION = 'geodesia.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': 'geo',
-#         'USER': 'depiction',
-#         'PASSWORD': 'afsstgLm',
-#         'HOST': 'localhost',  # Set to empty string for localhost.
-#         'PORT': '5432',  # Set to empty string for default.
+#         'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'geo',
+        'USER': 'depiction',
+        'PASSWORD': 'afsstgLm',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
