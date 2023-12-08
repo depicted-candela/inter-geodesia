@@ -1,16 +1,12 @@
-<div id="parametros-formulario">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% if tipo == 'aerogravimetria' %}
-        <div>
-            <label for="anomalia_aire_libre">Anomalía de Aire Libre</label>
-            <input type="text" class="adjust-width" id="anomalia_aire_libre" name="anomalia_aire_libre" placeholder="Nombre de la variable en el archivo">
-        </div>
-        <div>
-            <label for="correcion_aire_libre">Corrección de Aire Libre</label>
-            <input type="text" class="adjust-width" id="correcion_aire_libre" name="correcion_aire_libre" placeholder="Nombre de la variable en el archivo">
-        </div>
-    {% endif %}
-    </form>
+{% csrf_token %}
+{{ form.as_p }}
+{% if tipo == 'aerogravimetria' %}
+<div>
+    <label for="anomalia_aire_libre">Anomalía de Aire Libre</label>
+    <input type="text" class="adjust-width" id="anomalia_aire_libre" name="anomalia_aire_libre" placeholder="Nombre de la variable en el archivo">
 </div>
+<div>
+    <label for="correcion_aire_libre">Corrección de Aire Libre</label>
+    <input type="text" class="adjust-width" id="correcion_aire_libre" name="correcion_aire_libre" placeholder="Nombre de la variable en el archivo">
+</div>
+{% endif %}

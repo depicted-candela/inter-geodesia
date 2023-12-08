@@ -58,6 +58,16 @@ class Correcciones(models.Model):
     deriva  = models.BooleanField(help_text="Si la línea tiene corrección por deriva")
     marea   = models.BooleanField(help_text="Si la línea tiene corrección por marea")
 
+    class Meta:
+        ## Ordenar por
+        ordering            = ('-id',)
+        verbose_name        = 'Línea'
+        verbose_name_plural = 'Líneas'
+
+    ## Guardar el archivo temporal
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
 
 class Proyecto(models.Model):
     
@@ -87,11 +97,9 @@ class Proyecto(models.Model):
                                default='7019',
                                null=False,
                                help_text="Elipsoide de las coordenadas")
-    usuario = models.ForeignKey(
-        User,
-        related_name='proyecto_estandarizado',
-        on_delete=models.PROTECT
-    )
+
+    class Meta:
+        abstract    = True
 
     ## Guardar el archivo temporal
     def save(self, *args, **kwargs):
@@ -108,12 +116,17 @@ class ProyectoTerrestre(Proyecto):
                                max_length=30,
                                null=False,
                                help_text="Organización encargada del proyecto")
-    archivo = models.FileField(upload_to="archivos/gravimetria",
+    archivo = models.FileField(upload_to="estandarizados/gravimetria",
                             null=False,
                             help_text="Archivo del que provienen los datos")
     reporte = models.FileField(upload_to="reportes/gravimetria",
                                null=False,
                                help_text="Reporte que explica los datos")
+    usuario = models.ForeignKey(
+        User,
+        related_name='proyecto_terrestre_estandarizado',
+        on_delete=models.PROTECT
+    )
 
     class Meta:
         ## Ordenar por
@@ -142,6 +155,11 @@ class ProyectoOceanico(Proyecto):
     reporte = models.FileField(upload_to="reportes/batigravimetria",
                             null=False,
                             help_text="Reporte que explica los datos")
+    usuario = models.ForeignKey(
+        User,
+        related_name='proyecto_oceanico',
+        on_delete=models.PROTECT
+    )
     
     class Meta:
         ## Ordenar por
@@ -169,7 +187,12 @@ class ProyectoAereo(Proyecto):
     reporte = models.FileField(upload_to="reportes/aerogravimetria",
                             null=False,
                             help_text="Reporte que explica los datos")
-    
+    usuario = models.ForeignKey(
+        User,
+        related_name='proyecto_aereo',
+        on_delete=models.PROTECT
+    )
+
     class Meta:
         ## Ordenar por
         ordering            = ('-id',)

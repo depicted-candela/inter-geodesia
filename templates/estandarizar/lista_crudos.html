@@ -1,67 +1,67 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="container">
-    <h2>Item List</h2>
-    <form action="{% url 'listar_archivos_crudos' %}" method="post">
-        {% csrf_token %}
-        <div class="row">
-            {% for item in l_crudos %}
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            {{ item.nombre }}: {{ item.tipo }}
-                            <br>
-                            <a>{{ item.detalle }}</a>
-                        </h5>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="selected_item" value="{{ item.id }}" id="item{{ item.id }}" data-tipo="{{ item.tipo }}">
-                            <label class="form-check-label" for="item{{ item.id }}">
-                                Seleccionar
-                            </label>
+    <div class="container">
+        <h2>Archivos crudos</h2>
+        {% if message %}
+            {{ message }}
+        {% endif %}
+        <form id="contenedor-info" action="{% url 'listar_archivos_crudos' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                {% for item in l_crudos %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ item.nombre }}: {{ item.tipo }}
+                                <br>
+                                <a>{{ item.detalle }}</a>
+                            </h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="selected_item" value="{{ item.id }}" id="item{{ item.id }}" data-tipo="{{ item.tipo }}">
+                                <label class="form-check-label" for="item{{ item.id }}">
+                                    Seleccionar
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
 
-        <div id='tipo-form-contenedor'>
-        </div>
+            <div id='contenedor-parametros-tipo'>
+            </div>
+            <button type="submit" class="btn btn-primary">Procesar y estandarizar proyecto</button>
+        </form>
+    </div>
 
-        <button type="submit" class="btn btn-primary">Procesar y estandarizar proyecto</button>
-    </form>
-</div>
-
-<script>
-
-    document.querySelectorAll('.form-check-input').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            var tipo    = this.getAttribute('data-tipo');
-            var url     = `/estandarizar/listar_archivos_crudos/?tipo=${tipo}`;
-            fetch(url, {
-                method  : 'GET',
-                headers : {
-                    'X-Requested-With'  : 'XMLHttpRequest',
-                    'Content-Type'      : 'application/json',
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Solicitud inexitosa' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById('tipo-form-contenedor').innerHTML = data.parametros;
-            })
-            .catch(error => {
-                console.error('Hubo el error' + error.statusText);
+    <script>
+        document.querySelectorAll('.form-check-input').forEach(function(radio) {
+            console.log(radio);
+            radio.addEventListener('change', function() {
+                var tipo    = this.getAttribute('data-tipo');
+                var url     = `/estandarizar/listar_archivos_crudos/?tipo=${tipo}`;
+                fetch(url, {
+                    method  : 'GET',
+                    headers : {
+                        'X-Requested-With'  : 'XMLHttpRequest',
+                        'Content-Type'      : 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Solicitud inexitosa' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('contenedor-parametros-tipo').innerHTML = data.parametros;
+                })
+                .catch(error => {
+                    console.error('Hubo el error' + error.statusText);
+                });
             });
         });
-    });
-
-</script>
-
+    </script>
 {% endblock %}

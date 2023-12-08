@@ -1,0 +1,20 @@
+name: geo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pandas
+  - pyshtools
+  - geopandas
+  - metpy
+  - boule
+  - django
+  - django-leaflet
+  - django-extensions
+  - django-cors-headers
+  - djangorestframework
+  - djangorestframework-gis
+  - psycopg2-binary
+  - psycopg2
+  - pydotplus
