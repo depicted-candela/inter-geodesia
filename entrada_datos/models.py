@@ -19,7 +19,7 @@ class ArchivoCrudo(models.Model):
     ## Variables necesarias para entender el archivo
     id      = models.AutoField(primary_key=True)
     nombre  = models.CharField(max_length=50, null=False)
-    archivo = models.FileField(upload_to="crudos/", null=False)
+    archivo = models.FileField(upload_to="media/crudos/", null=False)
     tipo    = models.CharField(max_length=20, choices=OPCIONES, null=False)
     detalle = models.CharField(max_length=500, null=False)
     usuario = models.ForeignKey(

@@ -116,7 +116,7 @@ class ProyectoTerrestre(Proyecto):
                                max_length=30,
                                null=False,
                                help_text="Organización encargada del proyecto")
-    archivo = models.FileField(upload_to="estandarizados/gravimetria",
+    archivo = models.FileField(upload_to="media/estandarizados/gravimetria",
                             null=False,
                             help_text="Archivo del que provienen los datos")
     reporte = models.FileField(upload_to="reportes/gravimetria",
