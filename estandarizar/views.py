@@ -51,16 +51,16 @@ class VistaListaCrudos(TemplateView):
         object.usuario= archivo_cr.usuario
         object.pry_id= proyectos
         arch_orig_p = archivo_cr.archivo.path
-        print(arch_orig_p)
         arch_dest_n = os.path.basename(arch_orig_p)
-        arch_dest_p = os.path.join(settings.MEDIA_ROOT,
-                                   'archivos/gravimetria',
+        arch_dest_p = os.path.join(settings.BASE_DIR,
+                                   'media/estandarizados/gravimetria',
                                    arch_dest_n)
-        if not os.path.exists(arch_dest_p):
-            shutil.copy2(arch_orig_p, arch_dest_p)
+        if not os.path.exists(os.path.dirname(arch_dest_p)): os.makedirs(os.path.dirname(arch_dest_p))
+        shutil.copy2(arch_orig_p, arch_dest_p)
+        print(arch_dest_p)
         with open(arch_dest_p, 'rb') as file_content:
             object.archivo = File(file_content, name=arch_dest_n)
-        object.save()
+            object.save()
 
         return render(request, 'estandarizar/lista_crudos.html', {'message':'Proyecto subido'})
 
