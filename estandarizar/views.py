@@ -1,12 +1,18 @@
 from typing import Any
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.core import serializers
+from django.core.files import File
+from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import TemplateView, View
 from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
 from entrada_datos.models import ArchivoCrudo
+from .models import ProyectoAereo, Proyectos
 from .forms import ProyectoAereoForm
+import shutil
+import os
 
 
 class VistaListaCrudos(TemplateView):
@@ -34,8 +40,29 @@ class VistaListaCrudos(TemplateView):
     
     def post(self, request, *args, **kwargs):
 
-        parameters = request.POST
+        s_item_id   = request.POST.get('selected_item')
+        archivo_cr  = get_object_or_404(ArchivoCrudo, id=s_item_id)
+        ProyectoAereo()
+        proyectos   = Proyectos()
+        proyectos.save()
+        proyectos   = Proyectos.objects.first()
+        form        = ProyectoAereoForm(request.POST, request.FILES)
+        object      = form.save(commit=False)
+        object.usuario= archivo_cr.usuario
+        object.pry_id= proyectos
+        arch_orig_p = archivo_cr.archivo.path
+        print(arch_orig_p)
+        arch_dest_n = os.path.basename(arch_orig_p)
+        arch_dest_p = os.path.join(settings.MEDIA_ROOT,
+                                   'archivos/gravimetria',
+                                   arch_dest_n)
+        if not os.path.exists(arch_dest_p):
+            shutil.copy2(arch_orig_p, arch_dest_p)
+        with open(arch_dest_p, 'rb') as file_content:
+            object.archivo = File(file_content, name=arch_dest_n)
+        object.save()
 
+        return render(request, 'estandarizar/lista_crudos.html', {'message':'Proyecto subido'})
 
 class ProcessSelectedItemsView(View):
     def post(self, request, *args, **kwargs):
