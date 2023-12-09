@@ -339,6 +339,7 @@ class DatoAereo(models.Model):
                                   null=False,
                                   help_text="gravedad observada en altitud geométrica del avión (h)")
     a_a_li  = models.DecimalField(max_digits=6,
+                                  null=True,
                                   decimal_places=2,
                                   help_text="Anomalía de aire libre")
     radar   = models.DecimalField(max_digits=9,
