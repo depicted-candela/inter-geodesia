@@ -41,7 +41,6 @@ class VistaListaCrudos(TemplateView):
             return None  # or a default form
     
     def post(self, request, *args, **kwargs):
-
         s_item_id   = request.POST.get('selected_item')
         archivo_cr  = get_object_or_404(ArchivoCrudo, id=s_item_id)
         proyectos   = Proyectos()
@@ -62,20 +61,23 @@ class VistaListaCrudos(TemplateView):
         with open(arch_dest_p, 'rb') as file_content:
             object.archivo = File(file_content, name=arch_dest_n)
             object.save()
-
         if archivo_cr.tipo == 'aerogravimetria':
             self.crea_aerogravimetria_puntual(arch_dest_p,
-                                         anomalia_aire_libre=vars['anomalia_aire_libre'],
-                                         correcion_aire_libre=vars['correcion_aire_libre'],
-                                         longitud=vars['longitud'],
-                                         latitud=vars['latitud'],
-                                         original_id=vars['original_id'],
-                                         alt_h_a=vars['alt_h_a'],
-                                         alt_h_c=vars['alt_h_c'],
-                                         radar=vars['radar'],
-                                         fecha=vars['fecha'],
-                                         linea=vars['linea'])
+                                              anomalia_aire_libre=vars['anomalia_aire_libre'],
+                                              correcion_aire_libre=vars['correcion_aire_libre'],
+                                              longitud=vars['longitud'],
+                                              latitud=vars['latitud'],
+                                              original_id=vars['original_id'],
+                                              alt_h_a=vars['alt_h_a'],
+                                              alt_h_c=vars['alt_h_c'],
+                                              radar=vars['radar'],
+                                              fecha=vars['fecha'],
+                                              linea=vars['linea'],
+                                              empresa=vars['empresa'])
             return render(request, 'estandarizar/lista_crudos.html', {'message':'Proyecto subido'})
+
+    def _detecta_correccion_por_deriva_aerogravimetria(self, proyecto, deriva):
+        pass
 
     def crea_aerogravimetria_puntual(self, path_file, **kwargs):
 
@@ -83,24 +85,46 @@ class VistaListaCrudos(TemplateView):
         from qgeoidcol.gravedades import Gravedades
 
         lector  = Lector()
-        archivo = lector.leer(path_file, metodo='proyecto_gravedad', tipo='crudo-aereo',
-                                    longitud=kwargs['longitud'],
-                                    latitud=kwargs['latitud'])
+        archivo = lector.leer(path_file,
+                              metodo='proyecto_gravedad',
+                              tipo='crudo-aereo',
+                              longitud=kwargs['longitud'],
+                              latitud=kwargs['latitud'])
+        if 'path_deriva' in kwargs.keys():
+            deriva = lector.leer(kwargs['path_deriva'],
+                                 metodo='deriva',
+                                 empresa=kwargs['empresa'])
+            _detecta_correccion_por_deriva_aerogravimetria(archivo, deriva)
         gravedad= Gravedades()
-        gravedad.calcular_gravedad(archivo, 'carson_indirect',
-                                    free_air=kwargs['anomalia_aire_libre'],
-                                    free_air_corr=kwargs['correcion_aire_libre'])
+        gravedad.calcular_gravedad(archivo,
+                                   'carson_indirect',
+                                   free_air=kwargs['anomalia_aire_libre'],
+                                   free_air_corr=kwargs['correcion_aire_libre'])
+        
+        from qgeoidcol.alturas import Alturas
+
+        alturas = Alturas()
+        alturas.calcular_altura(archivo,
+                                'altura_anomala',
+                                modelo='eigen-6c4')
+        alturas.calcular_altura(archivo,
+                                'ondulacion_geoidal',
+                                modelo='eigen-6c4')
+
         proyecto= Proyectos.objects.first()
         paereo  = ProyectoAereo.objects.first()
-        df      = archivo.df
-        fid     = df[kwargs['original_id']]
-        geom    = df['GEOM']
-        grav    = df['GRAV']
-        h_adj   = df[kwargs['alt_h_a']]
-        h_cru   = df[kwargs['alt_h_c']]
-        radar   = df[kwargs['radar']]
-        linea   = df[kwargs['linea']]
+        adf     = archivo.df
+        fid     = adf[kwargs['original_id']]
+        geom    = adf['GEOM']
+        grav    = adf['GRAV']
+        h_adj   = adf[kwargs['alt_h_a']]
+        h_cru   = adf[kwargs['alt_h_c']]
+        radar   = adf[kwargs['radar']]
+        linea   = adf[kwargs['linea']]
+        zeta    = adf['zeta']
+        N       = adf['N']
         lineas  = set()
+        tot     = len(fid)
         for i, id in enumerate(fid):
             linea_   = linea[i]
             if type(linea_) != str:
@@ -110,17 +134,20 @@ class VistaListaCrudos(TemplateView):
                 linea__ = Linea(name=linea_,pry_id=proyecto)
                 linea__.save()
             dato_aereo = DatoAereo(
-                h_cru=h_cru[i],  # Replace with actual data
-                h_adj=h_adj[i],  # Replace with actual data
-                grav_h=grav[i],  # Replace with actual data
-                radar=radar[i],  # Replace with actual data
+                h_cru=h_cru[i],
+                h_adj=h_adj[i],
+                grav_h=grav[i],
+                radar=radar[i],
                 linea=linea__,
-                or_id=id,  # Replace with actual data
-                geom=Point(geom[i].x, geom[i].y),  # Replace with actual coordinates
-                xi=-999.99999,  # Replace with actual data
+                or_id=id,
+                geom=Point(geom[i].x, geom[i].y),
+                zeta=zeta[i],
+                N=N[i],
                 pry=paereo,
                 fecha=kwargs['fecha']
             )
+            percent = (i / tot)
+            print(f'\r{percent*100:.2f}%', end='\r')
             dato_aereo.save()
 
 
