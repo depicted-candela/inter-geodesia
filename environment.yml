@@ -18,3 +18,4 @@ dependencies:
   - psycopg2-binary
   - psycopg2
   - pydotplus
+  - jpype1

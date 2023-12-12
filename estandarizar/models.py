@@ -216,20 +216,22 @@ class Nivelacion(models.Model):
                                default='desc',
                                choices=TIPO,
                                help_text="Tipo de medición para altura sobre el nivel del mar")
-    cota    = models.DecimalField(max_digits=7,
+    cota    = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   help_text="Altura sobre el nivel del mar")
-    h_t     = models.DecimalField(max_digits=7,
+    h_t     = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   help_text="Altura geométrica h del punto")
     geom    = models.PointField(null=False, help_text="Geometría del punto")
-    xi      = models.DecimalField(max_digits=15,
-                                  decimal_places=12,
-                                  default=-999.99,
-                                  help_text="Altura anómala según modelo geoidal global")
-    N       = models.DecimalField(max_digits=15,
-                                  decimal_places=12,
-                                  default=-999.99,
+    zeta    = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
+                                  default=-999.99999,
+                                  null=False,
+                                  help_text="Altura anómala según modelo geoidal global en la superficie")
+    N       = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
+                                  default=-999.99999,
+                                  null=False,
                                   help_text="Ondulación geoidal según modelo geoidal global")
     obsv    = models.CharField(max_length=200,
                                help_text="Observaciones del punto")
@@ -258,19 +260,21 @@ class GravimetriaT(models.Model):
                                   decimal_places=3,
                                   null=False,
                                   help_text="Gravedad en terreno del punto")
-    h_t     = models.DecimalField(max_digits=7,
+    h_t     = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   help_text="Altura geométrica h del punto")
     geom    = models.PointField(null=False,
                                 default=Point(0.0, 0.0),
                                 help_text="Geometría del punto")
-    xi      = models.DecimalField(max_digits=15,
-                                  decimal_places=12,
-                                  default=-999.99,
-                                  help_text="Altura anómala según modelo geoidal global")
-    N       = models.DecimalField(max_digits=15,
-                                  decimal_places=12,
-                                  default=-999.99,
+    zeta    = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
+                                  default=-999.99999,
+                                  null=False,
+                                  help_text="Altura anómala según modelo geoidal global en la superficie")
+    N       = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
+                                  default=-999.99999,
+                                  null=False,
                                   help_text="Ondulación geoidal según modelo geoidal global")
     obsv    = models.CharField(max_length=200,
                                help_text="Observaciones del punto")
@@ -326,11 +330,11 @@ class DatoTerrestre(models.Model):
 class DatoAereo(models.Model):
     
     id      = models.BigAutoField(primary_key=True, help_text="Identificador del punto")
-    h_cru   = models.DecimalField(max_digits=7,
+    h_cru   = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   null=False,
                                   help_text="altitud geométrica cruda del avión (h)")
-    h_adj   = models.DecimalField(max_digits=7,
+    h_adj   = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   null=False,
                                   help_text="altitud geométrica ajustada del avión (h)")
@@ -338,11 +342,11 @@ class DatoAereo(models.Model):
                                   decimal_places=3,
                                   null=False,
                                   help_text="gravedad observada en altitud geométrica del avión (h)")
-    a_a_li  = models.DecimalField(max_digits=6,
+    a_a_li  = models.DecimalField(max_digits=8,
                                   null=True,
-                                  decimal_places=2,
+                                  decimal_places=3,
                                   help_text="Anomalía de aire libre")
-    radar   = models.DecimalField(max_digits=9,
+    radar   = models.DecimalField(max_digits=8,
                                   decimal_places=3,
                                   help_text="Altimetría de radar")
     linea   = models.ForeignKey(Linea,
@@ -351,11 +355,16 @@ class DatoAereo(models.Model):
                                 help_text="Línea de vuelo relacionada al punto")
     or_id   = models.IntegerField(help_text="Identificador de punto original del vuelo")
     geom    = models.PointField(null=False, help_text="Geometría del punto")
-    xi      = models.DecimalField(max_digits=15,
-                                  decimal_places=12,
+    zeta    = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
                                   default=-999.99999,
-                                  null=False,
-                                  help_text="Altura anómala según modelo geoidal global")
+                                  null=True,
+                                  help_text="Altura anómala según modelo geoidal global en la superficie")
+    N       = models.DecimalField(max_digits=8,
+                                  decimal_places=5,
+                                  default=-999.99999,
+                                  null=True,
+                                  help_text="Ondulación geoidal según modelo geoidal global")
     pry     = models.ForeignKey(ProyectoAereo,
                                 models.CASCADE,
                                 null=False,
