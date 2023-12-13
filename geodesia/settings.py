@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'geodesia.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'interoperabilidad',
+        'NAME': 'geo',
         'USER': 'depiction',
-        'PASSWORD': 'afsstgLm',
+        'PASSWORD': '',
         'HOST': 'localhost',  # Set to empty string for localhost.
         'PORT': '5432',  # Set to empty string for default.
     }

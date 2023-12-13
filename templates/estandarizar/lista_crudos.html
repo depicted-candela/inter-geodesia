@@ -29,10 +29,11 @@
                 </div>
                 {% endfor %}
             </div>
-
             <div id='contenedor-parametros-tipo'>
             </div>
-            <button type="submit" class="btn btn-primary">Procesar y estandarizar proyecto</button>
+            {% if not message %}
+                <button type="submit" class="btn btn-primary">Procesar y estandarizar proyecto</button>
+            {% endif %}
         </form>
     </div>
 

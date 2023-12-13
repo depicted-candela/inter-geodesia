@@ -1,3 +1,8 @@
+__pycache__/
+*.pyc
+*/migrations/*
+!*/migrations/__init__.py
 /media
+/archivos
 /reportes
 sqlite3
