@@ -6,7 +6,7 @@ class ProyectoAereoForm(forms.ModelForm):
     
     class Meta:
         model   = ProyectoAereo
-        fields = ['exact', 'nombre', 'reporte', 'detalle', 'org', 'fuente', 'elip']
+        fields = ['exact', 'nombre', 'reporte', 'detalle', 'org', 'fuente', 'elip', 'cc']
         labels  = {
             'exact': 'Exactitud',
             'nombre': 'Nombre del proyecto',
@@ -15,6 +15,7 @@ class ProyectoAereoForm(forms.ModelForm):
             'org': 'Organización que levantó las observaciones del proyecto',
             'fuente': 'Fuente que compartió los datos',
             'elip': 'Elipsoide de referencia para los datos',
+            'cc': 'Cross-Coupling conocido',
         }
     
     ## Inicializador de instancia SubirArchivosForm
