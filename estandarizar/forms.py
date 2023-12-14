@@ -8,7 +8,7 @@ class ProyectoAereoForm(forms.ModelForm):
         model   = ProyectoAereo
         fields = ['exact', 'nombre', 'reporte', 'detalle', 'org', 'fuente', 'elip', 'cc']
         labels  = {
-            'exact': 'Exactitud',
+            'exact': 'Exactitud (mGals)',
             'nombre': 'Nombre del proyecto',
             'reporte': 'Archivo reporte técnico del proyecto',
             'detalle': 'Observaciones del proyecto dadas por quien lo revisó',

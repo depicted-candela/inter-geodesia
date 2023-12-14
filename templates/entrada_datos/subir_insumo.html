@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <h3>Cargue archivos</h3>
+
+    {% if message %}
+        <a>{{message}}</a>
+    {% endif %}
+
+    <div id="new_source">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="text-right">
+                <button type="submit" class="btn btn-info btn-float-right">Cargar</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

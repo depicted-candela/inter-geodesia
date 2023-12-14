@@ -27,7 +27,7 @@ class Proyectos(models.Model):
     
     ## Definición para la función print
     def __str__(self):
-        return f"Proyecto {self.tipo}"
+        return f"Proyecto número {self.id}"
 
 
 class Linea(models.Model):

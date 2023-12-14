@@ -1,8 +1,10 @@
+/media
 __pycache__/
 *.pyc
+*.gdf
 */migrations/*
 !*/migrations/__init__.py
-/media
 /archivos
 /reportes
+/insumos
 sqlite3
