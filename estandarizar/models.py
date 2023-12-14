@@ -27,7 +27,7 @@ class Proyectos(models.Model):
     
     ## Definición para la función print
     def __str__(self):
-        return f"Proyecto {self.tipo}"
+        return f"Proyecto número {self.id}"
 
 
 class Linea(models.Model):
@@ -55,8 +55,8 @@ class Correcciones(models.Model):
 
     id      = models.AutoField(primary_key=True, help_text="Identificador de la correción para la línea")
     linea   = models.ForeignKey(Linea, models.CASCADE, null=False, help_text="Línea relacionada")
-    deriva  = models.BooleanField(help_text="Si la línea tiene corrección por deriva")
-    marea   = models.BooleanField(help_text="Si la línea tiene corrección por marea")
+    deriva  = models.BooleanField(null=True, blank=True, help_text="Si la línea tiene corrección por deriva")
+    marea   = models.BooleanField(null=True, blank=True, help_text="Si la línea tiene corrección por marea")
 
     class Meta:
         ## Ordenar por
@@ -155,6 +155,8 @@ class ProyectoOceanico(Proyecto):
     reporte = models.FileField(upload_to="reportes/batigravimetria",
                             null=False,
                             help_text="Reporte que explica los datos")
+    cc      = models.BooleanField(null=False,
+                                  help_text="Si se sabe que el proyecto tiene corrección Cross-Coupling")
     usuario = models.ForeignKey(
         User,
         related_name='proyecto_oceanico',
@@ -187,6 +189,8 @@ class ProyectoAereo(Proyecto):
     reporte = models.FileField(upload_to="reportes/aerogravimetria",
                             null=False,
                             help_text="Reporte que explica los datos")
+    cc      = models.BooleanField(null=False,
+                                  help_text="Si se sabe que el proyecto tiene corrección Cross-Coupling")
     usuario = models.ForeignKey(
         User,
         related_name='proyecto_aereo',
