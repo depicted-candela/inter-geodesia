@@ -9,12 +9,15 @@ class ArchivoCrudoForm(ModelForm):
 
     class Meta:
         model   = ArchivoCrudo
-        fields  = ['nombre', 'archivo', 'tipo', 'detalle']
+        fields  = ['nombre', 'archivo', 'meta', 'tipo', 'detalle', 'fuente', 'elip']
         labels  = {
             'nombre': 'Nombre (utilice minúsculas y no tildes)',
             'archivo': 'Archivo',
+            'meta': 'Reporte original con detalles',
             'tipo': 'Tipo de proyecto',
-            'detalle': 'Detalles'
+            'detalle': 'Detalles',
+            'fuente': 'Fuente',
+            'elip': 'Elipsoide',
         }
     
     ## Inicializador de instancia SubirArchivosForm
