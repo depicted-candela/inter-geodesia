@@ -9,14 +9,15 @@ class ArchivoCrudo(models.Model):
     """
 
     OPCIONES = [
+        ('grav-niv', 'Proyecto con gravimetría terrestre y nivelación'),
         ('aerogravimetria', 'Gravimetría aérea'),
-        ('batimetria', 'Gravimetría oceánica'),
+        ('batigravimetria', 'Gravimetría oceánica'),
         ('nivelacion', 'Nivelación'),
         ('gravterrabs', 'Gravedad terrestre absoluta'),
         ('gravterrrel', 'Gravedad terrestre relativa'),
     ]
 
-    ELLIP   = [
+    EPSG    = [
         ('7019', 'GRS80'),
         ('4326', 'WGS84'),
     ]
@@ -39,8 +40,8 @@ class ArchivoCrudo(models.Model):
                                default='desc',
                                null=False,
                                choices=FUENTES)
-    elip    = models.CharField(max_length=20,
-                               choices=ELLIP,
+    epsg    = models.CharField(max_length=20,
+                               choices=EPSG,
                                default='7019',
                                null=False,
                                help_text="Elipsoide de las coordenadas")
@@ -82,12 +83,13 @@ class Insumo(models.Model):
     
     ## Variables necesarias para entender el archivo
     id      = models.AutoField(primary_key=True)
-    nombre  = models.CharField(max_length=50, null=False)
-    detalle = models.CharField(max_length=500, null=False)
+    nombre  = models.CharField(max_length=50, null=False, help_text="nombre del insump")
+    detalle = models.CharField(max_length=500, null=False, help_text="detalle del tipo de insumo")
     fuente  = models.CharField(max_length=20,
                                default='desc',
                                null=False,
-                               choices=FUENTES)
+                               choices=FUENTES,
+                               help_text="Fuente que provee los datos")
     elip    = models.CharField(max_length=20,
                                choices=ELLIP,
                                default='7019',
@@ -124,12 +126,12 @@ class InsumoQGeoidal(Insumo):
     ]
     
     id      = models.AutoField(primary_key=True)
-    modelo  = models.CharField(max_length=40, choices=MODELO, null=False)
-    variable= models.CharField(max_length=40, choices=VARS, null=False)
-    archivo = models.FileField(upload_to="insumos/modelos_geoidales/datos", null=False)
-    meta    = models.FileField(upload_to="insumos/modelos_geoidales/metadatos", null=False)
+    modelo  = models.CharField(max_length=40, choices=MODELO, null=False, help_text="Modelo geoidal global fuente")
+    variable= models.CharField(max_length=40, choices=VARS, null=False, help_text="Variable del archivo")
+    archivo = models.FileField(upload_to="insumos/modelos_geoidales/datos", null=False, help_text="Dirección del archivo")
+    meta    = models.FileField(upload_to="insumos/modelos_geoidales/metadatos", null=False, help_text="Archivo de los metadatos del archivo")
 
     class Meta:
 
-        verbose_name        = 'archivo crudo'
-        verbose_name_plural = 'archivos crudos'
+        verbose_name        = 'insumo qgeoidal'
+        verbose_name_plural = 'insumos qgeoidales'

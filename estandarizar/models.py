@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Proyectos(models.Model):
+
     """Clase agregadora de todos los proyectos para el modelo geoidal
     para modelarlos en la base de datos relacional generada
 
@@ -13,13 +14,17 @@ class Proyectos(models.Model):
     Returns:
         _type_: _description_
     """
+
     id      = models.AutoField(primary_key=True, help_text="Identificador del proyecto")
+    natur   = models.CharField(max_length=500,
+                               default="Corregido por ITRF, con derivas y mareas conocidas",
+                               help_text="Naturaleza del proyecto")
     
     class Meta:
         ## Ordenar por
         ordering            = ('-id',)
-        verbose_name        = 'Proyecto'
-        verbose_name_plural = 'Proyectos'
+        verbose_name        = 'Proyecto por naturaleza'
+        verbose_name_plural = 'Proyectos por naturaleza'
 
     ## Guardar el archivo temporal
     def save(self, *args, **kwargs):
@@ -33,8 +38,8 @@ class Proyectos(models.Model):
 class Linea(models.Model):
     
     id      = models.AutoField(primary_key=True, help_text="Identificador de la línea")
-    name    = models.CharField(max_length=30, null=False)
-    pry_id  = models.ForeignKey(Proyectos, models.CASCADE, null=False)
+    name    = models.CharField(max_length=30, null=False, help_text="Identificador alfanúmerico por línea proveniente de proyecto")
+    pry_id  = models.ForeignKey(Proyectos, models.CASCADE, null=False, help_text="Proyecto asociado")
     
     class Meta:
         ## Ordenar por
@@ -109,17 +114,17 @@ class Proyecto(models.Model):
 class ProyectoTerrestre(Proyecto):
 
     ORGS    = [
-        ('d', 'Desconocido'),
+        ('geodesia-satelite', 'Geodesia por satélite'),
     ]
 
     org     = models.CharField(choices=ORGS,
                                max_length=30,
                                null=False,
                                help_text="Organización encargada del proyecto")
-    archivo = models.FileField(upload_to="media/estandarizados/gravimetria",
+    archivo = models.FileField(upload_to="media/estandarizados/gravimetria-terrestre",
                             null=False,
                             help_text="Archivo del que provienen los datos")
-    reporte = models.FileField(upload_to="reportes/gravimetria",
+    reporte = models.FileField(upload_to="reportes/gravimetria-terrestre",
                                null=False,
                                help_text="Reporte que explica los datos")
     usuario = models.ForeignKey(
@@ -220,10 +225,10 @@ class Nivelacion(models.Model):
                                default='desc',
                                choices=TIPO,
                                help_text="Tipo de medición para altura sobre el nivel del mar")
-    cota    = models.DecimalField(max_digits=8,
+    cota    = models.DecimalField(max_digits=7,
                                   decimal_places=3,
                                   help_text="Altura sobre el nivel del mar")
-    h_t     = models.DecimalField(max_digits=8,
+    h_t     = models.DecimalField(max_digits=7,
                                   decimal_places=3,
                                   help_text="Altura geométrica h del punto")
     geom    = models.PointField(null=False, help_text="Geometría del punto")
@@ -264,7 +269,7 @@ class GravimetriaT(models.Model):
                                   decimal_places=3,
                                   null=False,
                                   help_text="Gravedad en terreno del punto")
-    h_t     = models.DecimalField(max_digits=8,
+    h_t     = models.DecimalField(max_digits=7,
                                   decimal_places=3,
                                   help_text="Altura geométrica h del punto")
     geom    = models.PointField(null=False,
